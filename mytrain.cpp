@@ -3,6 +3,7 @@
 int main(int argc, char const *argv[]) {
     // Check arguments
     if (argc != 4) {
+        cerr << "Wrong arguments!" << endl;
         cerr << "Usage: "<< argv[0] << " <energy_ratio> <model_save_name> <dataset_path>" << endl << endl;
         cerr << "Description:" << endl;
         cerr << "<energy_ratio>: Decide how many eigenfaces will be used." << endl;
@@ -20,12 +21,13 @@ int main(int argc, char const *argv[]) {
     string dataset_path = argv[3];
 
     // Load images
-    vector<Mat> train_vec;
+    vector< pair<Mat, int> > train_vec;
     readAndAlign(dataset_path+"train/", train_vec);
 
     // Train eigenface
+    cout << "--- Start training ---" << endl;
     trainEigenface(train_vec, model_save_path, energy_ratio);
 
-    // cout << energy_ratio << " " << model_save_path << endl;
+    cout << "--- Training finished ---" << endl;
     return 0;
 }
