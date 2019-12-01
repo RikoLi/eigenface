@@ -18,7 +18,6 @@ using namespace cv;
 // Dataset parameters
 const int PEOPLE_NUM = 40; // 40 people
 const int TRAIN_IMG_NUM = 9; // 9 images to train for each person
-const int VAL_IMG_NUM = 1; // 1 image to validate for each person
 
 // Mask parameters
 const int MASK_WIDTH = 90; // Original width: 92
