@@ -52,7 +52,7 @@ Mat cropForMask(const string &img_name, const string &location_name) {
     return masked_face;
 }
 
-void readAndAlign(const string &dataset_path, vector< pair<Mat, int> > &dst_vec) {
+void readAndAlign(const string &dataset_path, vector< tuple<Mat, int, int> > &dst_vec) {
     stringstream sample_path;
     sample_path << dataset_path;
     for (int i = 1; i <= PEOPLE_NUM; ++i) {
@@ -64,7 +64,7 @@ void readAndAlign(const string &dataset_path, vector< pair<Mat, int> > &dst_vec)
             // Read an image and crop for masked area
             Mat masked_face;
             masked_face = cropForMask(img_name, location_name);
-            pair<Mat, int> tmp(masked_face, i);
+            tuple<Mat, int, int> tmp(masked_face, i, j);
             dst_vec.push_back(tmp);
 
             // Reset path
@@ -130,13 +130,17 @@ void visualizeTopKFaces(const Mat &eigenface_mat) {
     cout << "Top 10 eigenfaces are visualized" << endl;
 }
 
-void trainEigenface(const vector< pair<Mat, int> > &train_img_vec, const string &model_save_name, double energy_ratio) {
+void trainEigenface(const vector< tuple<Mat, int, int> > &train_img_vec, const string &model_save_name, double energy_ratio) {
     // Stack into feature vector
     Mat all_features;
     Mat labels;
     for (int i = 0; i < train_img_vec.size(); ++i) {
-        Mat ft = train_img_vec[i].first.reshape(1, 1);
-        int label = train_img_vec[i].second;
+        Mat ft = get<0>(train_img_vec[i]).reshape(1, 1);
+        int l1 = get<1>(train_img_vec[i]);
+        int l2 = get<2>(train_img_vec[i]);
+        Mat label = Mat::zeros(1, 2, CV_64FC1);
+        label.at<double>(0, 0) = l1;
+        label.at<double>(0, 1) = l2;
         ft.convertTo(ft, CV_64FC1);
         ft /= 255.0; // Squeeze in [0,1];
         all_features.push_back(ft);

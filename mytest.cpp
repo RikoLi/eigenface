@@ -41,19 +41,23 @@ int main(int argc, char const *argv[]) {
     // Project to subspace
     Mat test_feature = transform_mat * masked_test_face.t();
 
-    // Calculate similarity
-    // int id = getSimilarity();
-
     // Calculate loss
-    vector<double> loss_mat;
+    vector<double> loss_vec;
     for (int i = 0; i < sub_faces.cols; ++i) {
         Mat diff = sub_faces.col(i) - test_feature;
-        double loss = norm(diff, NORM_L2);
-        loss_mat.push_back(loss);
+        double loss = norm(diff, NORM_L2); // Use l2 norm
+        loss_vec.push_back(loss);
     }
 
-    auto smallest = min_element(begin(loss_mat), end(loss_mat));
-    int id = distance(begin(loss_mat), smallest);
-    cout << labels.row(id) << endl;
+    // Get labels
+    auto smallest = min_element(begin(loss_vec), end(loss_vec));
+    int id = distance(begin(loss_vec), smallest);
+
+    // Print results
+    cout << "--- Best match ---" << endl;
+    cout << "L2 loss: " << loss_vec[id] << endl;
+    cout << "Best matched person ID: " << labels.row(id).col(0) << endl;
+    cout << "Best matched image ID: " << labels.row(id).col(1) << endl;
+    cout << "--- End ---" << endl;
     return 0;
 }

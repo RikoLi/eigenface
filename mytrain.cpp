@@ -21,7 +21,7 @@ int main(int argc, char const *argv[]) {
     string dataset_path = argv[3];
 
     // Load images
-    vector< pair<Mat, int> > train_vec;
+    vector< tuple<Mat, int, int> > train_vec;
     readAndAlign(dataset_path+"train/", train_vec);
 
     // Train eigenface
