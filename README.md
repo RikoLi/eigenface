@@ -44,7 +44,7 @@ Each images is labeled with a `txt` file documenting the location of eyes. This 
        - ...
      - val/
        - ...
-   Make sure that each image is labeled by a eye location `txt` and they should be placed in the same folder.
+  Make sure that each image is labeled by a eye location `txt` and they should be placed in the same folder.
 3. In `utils.h`, change these settings:
    ```c++
    const 
