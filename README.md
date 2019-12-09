@@ -22,7 +22,7 @@ I calculate the corvariance matrix of a small training set of face images and th
 
 We use the eigenfaces to implement a dimensionality reduction on training data, which compresses a face image to a vector with fewer dimensions. When there comes a new test image, we apply the same reduction process on it and then calculate the similarity between the test vector (from the test image) and all other training vectors compressed from training faces before.
 
-### Dataset
+## Dataset
 
 - The ORL face database, Olivetti Research Laboratory in Cambridge, UK
 
@@ -45,12 +45,9 @@ Each images is labeled with a `txt` file documenting the location of eyes. This 
      - val/
        - ...
   Make sure that each image is labeled by a eye location `txt` and they should be placed in the same folder.
-3. In `utils.h`, change these settings:
-   ```c++
-   const 
-   ```
+3. In `utils.h`, change the settings about image size and amount.
 
-### Usage
+## Usage
 
 1. Clone this repo.
 2. Build the source code with cmake. You may need to edit the `CMakeLists.txt` to hit your requirement. Make sure dependencies were installed correctly before.
@@ -63,3 +60,7 @@ Each images is labeled with a `txt` file documenting the location of eyes. This 
    ```bash
    ./mytest test.png model.json test_eye_location.txt
    ```
+
+## References
+
+- [Low-dimensional procedure for the characterization of human faces](https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-4-3-519), L. Sirovich and M. Kirby

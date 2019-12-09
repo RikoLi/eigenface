@@ -16,7 +16,7 @@ using namespace std;
 using namespace cv;
 
 // Dataset parameters
-const int PEOPLE_NUM = 40; // 40 people
+const int PEOPLE_NUM = 41; // People amount
 const int TRAIN_IMG_NUM = 9; // 9 images to train for each person
 
 // Mask parameters
@@ -32,5 +32,6 @@ Mat removeAvg(const Mat &src_mat, Mat &dst_mat);
 int getBaseFacesNum(const Mat &eigenface_mat, const Mat &eigenvalue_mat, double energy_ratio);
 void visualizeTopKFaces(const Mat &eigenface_mat);
 void trainEigenface(const vector< tuple<Mat, int, int> > &train_img_vec, const string &model_save_name, double energy_ratio);
+double getLoss(const Mat &m1, const Mat &m2);
 
 #endif // UTILS_H

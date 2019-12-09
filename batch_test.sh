@@ -16,6 +16,7 @@ else
     TEST_PATH="${ROOT}val/"
     for PERSON in `ls $TEST_PATH`
     do
+        echo "Test for $PERSON:"
         ./mytest ${TEST_PATH}${PERSON}/10.pgm $MODEL ${TEST_PATH}${PERSON}/10.txt
     done
 fi

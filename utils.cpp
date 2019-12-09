@@ -142,7 +142,6 @@ void trainEigenface(const vector< tuple<Mat, int, int> > &train_img_vec, const s
         label.at<int>(0, 0) = l1;
         label.at<int>(0, 1) = l2;
         ft.convertTo(ft, CV_64FC1);
-        ft /= 255.0; // Squeeze in [0,1];
         all_features.push_back(ft);
         labels.push_back(label);
     }
@@ -163,7 +162,7 @@ void trainEigenface(const vector< tuple<Mat, int, int> > &train_img_vec, const s
     visualizeTopKFaces(eigenface_mat.colRange(0, k));
 
     // Compress training data into subspace
-    Mat sub_faces = eigenface_mat.colRange(0, k).t() * T; // sub_faces: (9900, k)
+    Mat sub_faces = eigenface_mat.colRange(0, k).t() * T;
     
     // Save model
     FileStorage model_writer(model_save_name+".json", FileStorage::WRITE);
@@ -180,4 +179,12 @@ void trainEigenface(const vector< tuple<Mat, int, int> > &train_img_vec, const s
     model_writer << "transform_mat" << eigenface_mat.colRange(0, k).t();
     model_writer.release();
     cout << "Eigenface model is saved as " << model_save_name << ".json" << endl;
+}
+
+double getLoss(const Mat &m1, const Mat &m2) {
+    double loss;
+    // L2 loss
+    Mat diff = m1 - m2;
+    loss = norm(diff, NORM_L2);
+    return loss;
 }

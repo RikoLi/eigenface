@@ -35,7 +35,6 @@ int main(int argc, char const *argv[]) {
     string test_eye_location = argv[3];
     Mat masked_test_face = cropForMask(img_name, test_eye_location);
     masked_test_face.reshape(1, 1).convertTo(masked_test_face, CV_64FC1);
-    masked_test_face /= 255.0; // Squeeze to [0,1]
     masked_test_face -= avg_img;
 
     // Project to subspace
@@ -44,8 +43,7 @@ int main(int argc, char const *argv[]) {
     // Calculate loss
     vector<double> loss_vec;
     for (int i = 0; i < sub_faces.cols; ++i) {
-        Mat diff = sub_faces.col(i) - test_feature;
-        double loss = norm(diff, NORM_L2); // Use l2 norm
+        double loss = getLoss(sub_faces.col(i), test_feature);
         loss_vec.push_back(loss);
     }
 
@@ -63,13 +61,47 @@ int main(int argc, char const *argv[]) {
     stringstream ss;
     ss << "../dataset/train/s" << labels.at<int>(id, 0) << "/";
     ss << labels.at<int>(id, 1) << ".pgm";
-    Mat matched_face = imread(ss.str(), IMREAD_GRAYSCALE); // Load matched face in face library
-    Mat test_face = imread(img_name, IMREAD_GRAYSCALE); // Load test face
+    Mat matched_face = imread(ss.str(), IMREAD_COLOR); // Load matched face in face library
+    Mat test_face = imread(img_name, IMREAD_COLOR); // Load test face
     Mat concat_face;
+    
+    // Blending with factor of 0.5
+    Mat blend_face;
+    Mat blend_mask = Mat::ones(test_face.rows, test_face.cols, CV_32FC1) * 0.5;
+    blendLinear(test_face, matched_face, blend_mask, blend_mask, blend_face);
+    imwrite("blended.png", blend_face);
+    cout << "Blended face is saved." << endl;
+
+    // Reconstruction
+    Mat recon_face = Mat::zeros(1, MASK_HEIGHT*MASK_WIDTH, CV_64FC1);
+    for (int i = 0; i < test_feature.rows; ++i) {
+        recon_face += test_feature.at<double>(i, 0) * transform_mat.row(i);
+    }
+
+    // Normalize into 0-255
+    double max_value, min_value;
+    minMaxLoc(recon_face, &min_value, &max_value);
+    recon_face = (recon_face - min_value) / (max_value - min_value) * 255.0;
+    
+    // Add average face
+    recon_face += avg_img;
+    minMaxLoc(recon_face, &min_value, &max_value);
+    recon_face = (recon_face - min_value) / (max_value - min_value) * 255.0;
+    recon_face.reshape(1, MASK_HEIGHT).convertTo(recon_face, CV_8UC1);
+    imwrite("reconstructed.png", recon_face);
+    cout << "Reconstructed face is saved." << endl;
+    
+    // Print text
+    ss.str("");
+    ss << "pid: " << labels.at<int>(id, 0);
+    putText(test_face, "Test image", Point(0, 11), FONT_HERSHEY_PLAIN , 0.8, Scalar(0,0,255));
+    putText(matched_face, ss.str(), Point(0, 11), FONT_HERSHEY_PLAIN , 0.8, Scalar(0,0,255));
+    ss.str("");
+    ss << "imid: " << labels.at<int>(id, 1);
+    putText(matched_face, ss.str(), Point(0, 25), FONT_HERSHEY_PLAIN , 0.8, Scalar(0,0,255));
     hconcat(test_face, matched_face, concat_face); // Concatenate two faces as an image
     imwrite("best_match.png", concat_face);
     cout << "Best matched result is saved." << endl;
     cout << "--- End ---" << endl;
-
     return 0;
 }
