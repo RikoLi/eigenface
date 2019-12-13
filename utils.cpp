@@ -76,7 +76,7 @@ void readAndAlign(const string &dataset_path, vector< tuple<Mat, int, int> > &ds
 
 Mat removeAvg(const Mat &src_mat, Mat &dst_mat) {
     Mat s = Mat::zeros(1, src_mat.cols, CV_64FC1);
-    for (int i = 0; i < src_mat.rows; ++i) {
+    for (size_t i = 0; i < src_mat.rows; ++i) {
         s += src_mat.row(i);
     }
 
@@ -84,7 +84,7 @@ Mat removeAvg(const Mat &src_mat, Mat &dst_mat) {
     s /= src_mat.rows;
 
     Mat avg_mat = Mat::zeros(src_mat.rows, src_mat.cols, CV_64FC1);
-    for (int i = 0; i < src_mat.rows; ++i) {
+    for (size_t i = 0; i < src_mat.rows; ++i) {
         s.copyTo(avg_mat.row(i));
     }
     dst_mat = src_mat - avg_mat; // Remove average value
@@ -94,7 +94,7 @@ Mat removeAvg(const Mat &src_mat, Mat &dst_mat) {
 
 int getBaseFacesNum(const Mat &eigenface_mat, const Mat &eigenvalue_mat, double energy_ratio) {
     double s = sum(eigenvalue_mat).val[0];
-    for (int i = 0; i < eigenvalue_mat.rows; ++i) {
+    for (size_t i = 0; i < eigenvalue_mat.rows; ++i) {
         double top_i_sum = sum(eigenvalue_mat.rowRange(0, i+1)).val[0];
         double percentage = top_i_sum / s;
         if (percentage >= energy_ratio) {
@@ -106,7 +106,7 @@ int getBaseFacesNum(const Mat &eigenface_mat, const Mat &eigenvalue_mat, double 
 void visualizeTopKFaces(const Mat &eigenface_mat) {
     // Image reconstruction
     Mat all_recon_faces = Mat::zeros(2*MASK_HEIGHT, 5*MASK_WIDTH, CV_8UC1);
-    for (int i = 0; i < 10; ++i) {
+    for (size_t i = 0; i < 10; ++i) {
         // Reshape to image size
         Mat recon_face;
         eigenface_mat.col(i).copyTo(recon_face);
@@ -134,7 +134,7 @@ void trainEigenface(const vector< tuple<Mat, int, int> > &train_img_vec, const s
     // Stack into feature vector
     Mat all_features;
     Mat labels;
-    for (int i = 0; i < train_img_vec.size(); ++i) {
+    for (size_t i = 0; i < train_img_vec.size(); ++i) {
         Mat ft = get<0>(train_img_vec[i]).reshape(1, 1);
         int l1 = get<1>(train_img_vec[i]);
         int l2 = get<2>(train_img_vec[i]);

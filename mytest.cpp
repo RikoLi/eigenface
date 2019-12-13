@@ -42,7 +42,7 @@ int main(int argc, char const *argv[]) {
 
     // Calculate loss
     vector<double> loss_vec;
-    for (int i = 0; i < sub_faces.cols; ++i) {
+    for (size_t i = 0; i < sub_faces.cols; ++i) {
         double loss = getLoss(sub_faces.col(i), test_feature);
         loss_vec.push_back(loss);
     }
@@ -74,7 +74,7 @@ int main(int argc, char const *argv[]) {
 
     // Reconstruction
     Mat recon_face = Mat::zeros(1, MASK_HEIGHT*MASK_WIDTH, CV_64FC1);
-    for (int i = 0; i < test_feature.rows; ++i) {
+    for (size_t i = 0; i < test_feature.rows; ++i) {
         recon_face += test_feature.at<double>(i, 0) * transform_mat.row(i);
     }
 
