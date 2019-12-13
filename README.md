@@ -1,6 +1,6 @@
 # Eigenface
 
-Assignment 3 for Computer Vision, Winter, 2019, ZJU.
+Assignment 3 for Computer Vision, 2019 Winter, ZJU.
 
 Eigenface algorithm implementation for face recognition in C++.
 
